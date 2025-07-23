@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite3
+.env
+
+# IDE/editor files
+.vscode/
+*.log
+
+# Excel/Backup
+*.xlsx
+*.xls
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
