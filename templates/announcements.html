@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📢 Library Announcements - Chinmaya Smart Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+            padding: 30px;
+        }
+
+        .announcement-card {
+            border-radius: 20px;
+            animation: fadeIn 0.6s ease-in-out;
+            transition: transform 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            transform: scale(1.02);
+        }
+
+        .icon {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 class="text-center text-primary mb-4">📢 Chinmaya Smart Library Announcements</h2>
+
+        <!-- 📘 New Arrivals -->
+        <div class="card announcement-card shadow mb-4 border-success border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-success"><span class="icon">📘</span>New Book Arrivals</h5>
+                <p class="card-text">We have added over <strong>150 new books</strong> across fiction, science,
+                    biographies, and exam preparation guides. Visit the <a href="/view_books">Books Section</a> to
+                    explore now!</p>
+            </div>
+        </div>
+
+        <!-- 📅 Events -->
+        <div class="card announcement-card shadow mb-4 border-info border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-info"><span class="icon">📅</span>Upcoming Event</h5>
+                <p class="card-text">📖 <strong>Reading Week</strong> is from <strong>Aug 5 – Aug 10</strong>. Special
+                    activities include Quiz, Book Talks, and Story Sessions for all classes.</p>
+            </div>
+        </div>
+
+        <!-- 🧾 Guidelines -->
+        <div class="card announcement-card shadow mb-4 border-warning border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-warning"><span class="icon">🧾</span>Library Guidelines</h5>
+                <ul>
+                    <li>Each student can borrow up to 2 books at a time.</li>
+                    <li>Return within 7 days to avoid overdue charges.</li>
+                    <li>Maintain silence and keep books in good condition.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 🏆 Achievements -->
+        <div class="card announcement-card shadow mb-4 border-primary border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-primary"><span class="icon">🏆</span>Top Readers of the Month</h5>
+                <ul>
+                    <li><strong>Vaishnavi (Class 8-B):</strong> 12 books</li>
+                    <li><strong>Aditya (Class 10-A):</strong> 10 books</li>
+                    <li><strong>Ritika (Inter-MPC):</strong> 9 books</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 🎯 Notices -->
+        <div class="card announcement-card shadow mb-4 border-danger border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-danger"><span class="icon">🎯</span>Important Notice</h5>
+                <p class="card-text">Students are requested to <strong>return overdue books by July 25</strong> to avoid
+                    penalties and maintain borrowing eligibility.</p>
+            </div>
+        </div>
+
+        <!-- 🌟 General Info -->
+        <div class="card announcement-card shadow mb-4 border-dark border-start border-5">
+            <div class="card-body">
+                <h5 class="card-title text-dark"><span class="icon">🌟</span>General Information</h5>
+                <p class="card-text">Library is open from <strong>9 AM to 3:30 PM</strong> on all working days. Use your
+                    ID card to access your account and borrow books.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

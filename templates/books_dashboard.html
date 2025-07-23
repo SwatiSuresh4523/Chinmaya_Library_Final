@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📚 Chinmaya Library – Books Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f4f7;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: #333;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+        .btn-box {
+            padding: 25px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-box:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .book-entry {
+            background-color: #0d6efd;
+        }
+
+        .view-books {
+            background-color: #198754;
+        }
+
+        .issue-return {
+            background-color: #6610f2;
+        }
+
+        .reports {
+            background-color: #fd7e14;
+        }
+
+        .students {
+            background-color: #20c997;
+        }
+
+        .teachers {
+            background-color: #6f42c1;
+        }
+
+        .acquisition {
+            background-color: #dc3545;
+        }
+
+        .cataloging {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .periodicals {
+            background-color: #17a2b8;
+        }
+
+        .reference {
+            background-color: #343a40;
+        }
+
+        .btn-home {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="text-center">
+        <h2>📚 Chinmaya Library – Book Section</h2>
+        <div class="grid-container">
+            <a href="/book_entry" class="btn-box book-entry">➕ Book Entry</a>
+            <a href="/view_books" class="btn-box view-books">📋 View Books</a>
+            <a href="/issue_return" class="btn-box issue-return">🔄 Issue / Return</a>
+            <a href="/reports" class="btn-box reports">📊 Reports</a>
+            <a href="/acquisition" class="btn-box acquisition">🛒 Book Acquisition</a>
+            <a href="/cataloging" class="btn-box cataloging">🧾 Technical Cataloging</a>
+            <a href="/periodicals" class="btn-box periodicals">📰 Periodicals</a>
+            <a href="/reference" class="btn-box reference">📖 Reference Books</a>
+        </div>
+        <a href="/" class="btn btn-secondary btn-home">🏠 Back to Home</a>
+    </div>
+
+</body>
+
+</html>

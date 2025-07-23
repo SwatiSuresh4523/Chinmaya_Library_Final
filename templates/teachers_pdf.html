@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        h2 {
+            text-align: center;
+            font-family: Arial;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Teacher List – Chinmaya Vidyalaya</h2>
+    {{ table | safe }}
+</body>
+
+</html>

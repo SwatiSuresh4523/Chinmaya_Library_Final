@@ -1,0 +1,14 @@
+import sqlite3
+
+conn = sqlite3.connect("library.db")
+cur = conn.cursor()
+
+# Add the due_date column only if it doesn't exist
+try:
+    cur.execute("ALTER TABLE issue_return ADD COLUMN due_date TEXT")
+    print("✅ 'due_date' column added.")
+except sqlite3.OperationalError as e:
+    print("⚠️", e)
+
+conn.commit()
+conn.close()

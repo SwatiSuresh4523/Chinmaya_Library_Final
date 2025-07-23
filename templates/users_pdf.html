@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chinmaya Smart Library - Users Report</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            margin: 20px;
+            color: #333;
+            position: relative;
+        }
+
+        h2,
+        h4,
+        h5 {
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header img {
+            width: 80px;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #004080;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+
+        td {
+            padding: 6px;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f0f8ff;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .summary {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 11px;
+            text-align: center;
+            color: #555;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 40%;
+            left: 20%;
+            transform: rotate(-30deg);
+            font-size: 60px;
+            color: lightgray;
+            opacity: 0.2;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Watermark -->
+    <div class="watermark">Chinmaya Library</div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/library_logo.png') }}" alt="Library Logo">
+        <h2>Chinmaya Smart Library</h2>
+        <h4>📄 Users Report</h4>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary">
+        <p><strong>Total Users:</strong> {{ users|length }}</p>
+        <p><strong>Teachers:</strong> {{ total_teachers }} | <strong>Students:</strong> {{ total_students }}</p>
+        <p><strong>Report Generated on:</strong> {{ timestamp }}</p>
+    </div>
+
+    <!-- Users Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Group</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Account No</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.class or '-' }}</td>
+                <td>{{ user.group or '-' }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.account_number }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        📬 Chinmaya Smart Library | 📍 Powered by Chinmaya Tech Team<br>
+        Page generated on {{ timestamp }}
+    </div>
+
+</body>
+
+</html>

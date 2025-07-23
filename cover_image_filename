@@ -1,0 +1,13 @@
+import sqlite3
+
+conn = sqlite3.connect("library.db")
+cur = conn.cursor()
+
+# Add column only if not exists
+try:
+    cur.execute("ALTER TABLE books ADD COLUMN cover_image_filename TEXT")
+except sqlite3.OperationalError:
+    print("Column already exists.")
+
+conn.commit()
+conn.close()

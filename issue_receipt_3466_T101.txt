@@ -1,0 +1,10 @@
+📚 Chinmaya Smart Library – Book Issue Receipt
+
+Book Title   : The Mona Mousa Code
+Book ID      : 3466
+Issued To    : Ravi Kumar (T101)
+Issue Date   : 2025-07-22
+Due Date     : 
+Status       : ✅ Issued
+
+Thank you for using Chinmaya Library!

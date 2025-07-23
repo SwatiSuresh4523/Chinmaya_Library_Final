@@ -1,0 +1,426 @@
+<!-- FINAL – Chinmaya Smart Library Animated Dashboard with All Features -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📊 Chinmaya Smart Library Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            animation: bgShift 20s infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% {
+                background: linear-gradient(to right, #ffecd2, #fcb69f);
+            }
+
+            50% {
+                background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+            }
+
+            100% {
+                background: linear-gradient(to right, #d4fc79, #96e6a1);
+            }
+        }
+
+        .top-bar,
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+            animation: pulse 4s infinite;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .card h3 {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .card span {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .bg1 {
+            background: #fbc531;
+        }
+
+        .bg2 {
+            background: #00a8ff;
+        }
+
+        .bg3 {
+            background: #4cd137;
+        }
+
+        .bg4 {
+            background: #e84118;
+        }
+
+        .bg5 {
+            background: #8c7ae6;
+        }
+
+        .bg6 {
+            background: #e1b12c;
+        }
+
+        .bg7 {
+            background: #00cec9;
+        }
+
+        .bg8 {
+            background: #d63031;
+        }
+
+        .bg9 {
+            background: #6c5ce7;
+        }
+
+        .bg10 {
+            background: #0984e3;
+        }
+
+        canvas {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 25px auto;
+            max-width: 100%;
+        }
+
+        table {
+            background: white;
+            border-radius: 10px;
+            width: 100%;
+            overflow: auto;
+        }
+
+        .dt-buttons {
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            background: #222;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            margin-top: 40px;
+            border-radius: 10px;
+        }
+
+        .timeline,
+        .notice-board {
+            margin: 30px auto;
+            max-width: 90%;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline li,
+        .notice-board li {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+
+        .top-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .top-buttons button {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-print {
+            background: #f39c12;
+            color: white;
+        }
+
+        .alert-banner {
+            background: #f6e58d;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .marquee {
+            background: #130f40;
+            color: #fff;
+            padding: 8px;
+            font-weight: bold;
+        }
+
+        .popup {
+            background-color: #dff9fb;
+            border: 2px solid #22a6b3;
+            padding: 12px;
+            border-radius: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left" scrollamount="6">📢 Welcome to Chinmaya Smart Library – Explore,
+            Read, Grow | Overdue Alerts | Live Reports | Developed by Suresh 📚</marquee>
+    </div>
+
+    <div class="alert-banner">🔔 Library System Updated on: {{ update_date or "July 2025" }} – Check new features!</div>
+    <div class="popup" id="popupMsg">✅ Successfully Loaded Dashboard!</div>
+
+    <h2 class="text-center mt-4">📈 Chinmaya Smart Library Dashboard</h2>
+
+    <div class="top-buttons">
+        <button class="btn-home" onclick="location.href='{{ url_for('home') }}'">🏠 Back to Home</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Print Dashboard</button>
+        <button class="btn btn-danger" onclick="showAlert('🔔 New Book Collection Available!')">🔔 Show
+            Notification</button>
+    </div>
+
+    <div class="top-bar">
+        <div><strong>🕒 Live Clock:</strong> <span id="liveClock"></span></div>
+        <div><strong>🔐 Last Login:</strong> {{ last_login_user }} at {{ last_login_time }}</div>
+    </div>
+
+    <div class="filter-bar">
+        <select class="form-select w-auto">
+            <option selected>Class</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+        </select>
+        <select class="form-select w-auto">
+            <option selected>Department</option>
+            <option>MPC</option>
+            <option>BiPC</option>
+            <option>CEC</option>
+        </select>
+        <select class="form-select w-auto">
+            <option selected>Month</option>
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+        </select>
+        <input type="date" class="form-control w-auto">
+        <input type="date" class="form-control w-auto">
+        <button class="btn btn-primary">Apply Filters</button>
+    </div>
+
+    <div class="card-grid">
+        <!-- Existing 12 cards + New Cards (You already have) -->
+        <div class="card bg1">
+            <h3>Total Books</h3><span>{{ total_books }}</span>
+        </div>
+        <div class="card bg2">
+            <h3>Issued Books</h3><span>{{ total_issued }}</span>
+        </div>
+        <div class="card bg3">
+            <h3>Returned Books</h3><span>{{ total_returned }}</span>
+        </div>
+        <div class="card bg4">
+            <h3>Not Returned</h3><span>{{ not_returned }}</span>
+        </div>
+        <div class="card bg5">
+            <h3>Overdue</h3><span>{{ overdue }}</span>
+        </div>
+        <div class="card bg6">
+            <h3>Total Fine</h3><span>₹{{ total_fine }}</span>
+        </div>
+        <div class="card bg7">
+            <h3>Today's Issued</h3><span>{{ today_issued }}</span>
+        </div>
+        <div class="card bg8">
+            <h3>This Month's Issued</h3><span>{{ month_issued }}</span>
+        </div>
+        <div class="card bg9">
+            <h3>Total Students</h3><span>{{ total_students }}</span>
+        </div>
+        <div class="card bg10">
+            <h3>Total Teachers</h3><span>{{ total_teachers }}</span>
+        </div>
+        <div class="card bg1">
+            <h3>Last Month Issued</h3><span>{{ last_month_issued }}</span>
+        </div>
+        <div class="card bg2">
+            <h3>Last Month Students</h3><span>{{ last_month_students }}</span>
+        </div>
+        <!-- Extra features -->
+        <div class="card bg3">
+            <h3>📘 Top 5 Students</h3><span>{{ top_students|length }}</span>
+        </div>
+        <div class="card bg4">
+            <h3>📚 Top 5 Books</h3><span>{{ top_books|length }}</span>
+        </div>
+        <div class="card bg6">
+            <h3>📦 DB Size</h3><span>{{ db_size }}</span>
+        </div>
+        <div class="card bg5">
+            <h3>📘 Books Never Issued</h3><span>{{ never_issued_count }}</span>
+        </div>
+        <div class="card bg7">
+            <h3>📷 QR Scan Logs</h3><span>{{ qr_logs_today }}</span>
+        </div>
+        <div class="card bg10">
+            <h3>👁️ Active Users</h3><span>{{ active_users }}</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-title">📄 Transactions Report</div>
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>User</th>
+                    <th>Book</th>
+                    <th>Issue</th>
+                    <th>Due</th>
+                    <th>Return</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_data %}
+                <tr>
+                    <td>{{ row.user_name }}</td>
+                    <td>{{ row.book_title }}</td>
+                    <td>{{ row.issue_date }}</td>
+                    <td>{{ row.due_date }}</td>
+                    <td>{{ row.return_date or "Not Returned" }}</td>
+                    <td>₹{{ row.fine or 0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="timeline">
+        <h5>🕒 Live Activity Timeline</h5>
+        <ul>
+            {% for entry in recent_activity %}
+            <li>{{ entry }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="notice-board">
+        <h5>📎 Notice Board</h5>
+        <ul>
+            {% for note in announcements %}
+            <li>{{ note }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <footer>
+        📚 Chinmaya Smart Library © 2025 – Developed by Suresh | "Read to Lead, Learn to Grow" |
+        🌐 <a href="https://yourlibrarywebsite.com" style="color: #ccc;">Visit Library Portal</a>
+    </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById("liveClock").textContent = now.toLocaleString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        window.onload = () => {
+            const popup = document.getElementById("popupMsg");
+            popup.style.display = "block";
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 4000);
+        };
+
+        function showAlert(msg) {
+            alert(msg);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+📚 Chinmaya Smart Library – Book Issue Receipt
+
+Book Title   : The Mona Mousa Code
+Book ID      : 3466
+Issued To    : Swati Suresh (S4523)
+Issue Date   : 2025-07-16
+Due Date     : 2025-07-23
+Status       : ✅ Issued
+
+Thank you for using Chinmaya Library!

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📊 Chinmaya Library Reports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styles are same as before – clean and responsive */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+            padding: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2b2d42;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .scrolling-banner {
+            background: #ff006e;
+            color: #fff;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .scrolling-banner span {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .search-filter {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            width: 200px;
+        }
+
+        .report-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            animation: fadeUp 1s ease-in;
+        }
+
+        @keyframes fadeUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .report-btn {
+            padding: 15px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .report-btn:hover {
+            box-shadow: 0 0 12px #fff;
+            transform: scale(1.05);
+        }
+
+        /* Colors */
+        .red {
+            background-color: #e63946;
+        }
+
+        .blue {
+            background-color: #457b9d;
+        }
+
+        .green {
+            background-color: #2a9d8f;
+        }
+
+        .purple {
+            background-color: #9b5de5;
+        }
+
+        .orange {
+            background-color: #f4a261;
+        }
+
+        .teal {
+            background-color: #00b4d8;
+        }
+
+        .pink {
+            background-color: #ff006e;
+        }
+
+        .yellow {
+            background-color: #ffbe0b;
+            color: #000;
+        }
+
+        .gray {
+            background-color: #6c757d;
+        }
+
+        .dark {
+            background-color: #1d3557;
+        }
+
+        .lime {
+            background-color: #a3e635;
+            color: #000;
+        }
+
+        .indigo {
+            background-color: #6366f1;
+        }
+
+        .cyan {
+            background-color: #06d6a0;
+        }
+
+        .gold {
+            background-color: #ffd700;
+            color: black;
+        }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .chart-container {
+            margin-top: 40px;
+            background: #ffffffdd;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            border-radius: 12px;
+        }
+
+        .popup.show {
+            display: block;
+        }
+
+        .popup h2 {
+            margin-bottom: 10px;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scrolling-banner"><span>📢 Welcome to Chinmaya Smart Library Reports – Live Data, Analytics &
+            Insights</span></div>
+    <h1 class="header">📊 Chinmaya Smart Library – Advanced Reports Dashboard</h1>
+
+    <div class="search-filter">
+        <input type="text" placeholder="🔍 Search by Name, ID or Title" />
+        <select>
+            <option>📅 Date Range</option>
+            <option>Today</option>
+            <option>This Week</option>
+            <option>This Month</option>
+        </select>
+        <select>
+            <option>📚 Report Type</option>
+            <option>Issue Report</option>
+            <option>Return Report</option>
+            <option>Fine Report</option>
+        </select>
+    </div>
+
+    <div class="report-section">
+        <button class="report-btn red" onclick="showPopup('Daily Issue Report loaded.')">📅 Daily Report</button>
+        <button class="report-btn blue" onclick="showPopup('Monthly Stats Ready.')">📘 Monthly Stats</button>
+        <button class="report-btn green" onclick="showPopup('Top 10 Books Report.')">🏆 Top Books</button>
+        <button class="report-btn purple" onclick="showPopup('Usage by Class')">🎓 Class Usage</button>
+        <button class="report-btn orange" onclick="showPopup('Fine Summary')">💰 Fine Report</button>
+        <button class="report-btn teal" onclick="showPopup('Overdue Books')">⏳ Overdue</button>
+        <button class="report-btn pink" onclick="showPopup('Teacher Usage Report')">👩‍🏫 Teachers</button>
+        <button class="report-btn yellow" onclick="showPopup('Student-wise Report')">🧑‍🎓 Students</button>
+        <button class="report-btn gray" onclick="downloadExcel()">📄 Download Excel</button>
+        <button class="report-btn dark" onclick="window.print()">🖨️ Print</button>
+        <button class="report-btn lime" onclick="showPopup('Unused Books in 6 months.')">🕵️‍♂️ Unused Books</button>
+        <button class="report-btn indigo" onclick="showPopup('Active User Summary')">📋 Active Accounts</button>
+        <button class="report-btn cyan" onclick="showPopup('Low Activity Students')">⚠️ Low Activity</button>
+        <button class="report-btn gold" onclick="showPopup('Recommended Reorders')">📦 Reorder Alert</button>
+    </div>
+
+    <a href="/" class="back-btn">🔙 Back to Home</a>
+
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Account No</th>
+                <th>Name</th>
+                <th>Book Title</th>
+                <th>Issue Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Fine</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_data %}
+            <tr>
+                <td>{{ row.user_id }}</td>
+                <td>{{ row.user_name }}</td>
+                <td>{{ row.book_title }}</td>
+                <td>{{ row.issue_date }}</td>
+                <td>{{ row.return_date or 'Not Returned' }}</td>
+                <td>{{ row.status }}</td>
+                <td>₹{{ row.fine if row.fine is defined else '0' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="chart-container">
+        <canvas id="classChart" height="120"></canvas>
+    </div>
+
+    <script>
+        function showPopup(message) {
+            const popup = document.getElementById("popup");
+            document.getElementById("popup-text").innerText = message;
+            popup.classList.add("show");
+        }
+
+        function closePopup() {
+            document.getElementById("popup").classList.remove("show");
+        }
+
+        function downloadExcel() {
+            showPopup("✅ Downloading Excel Report...");
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = '/download_report_excel';
+                link.download = 'library_report.xlsx';
+                link.click();
+            }, 1000);
+        }
+
+        const classLabels = {{ class_labels | tojson }};
+        const classData = {{ class_data | tojson }};
+
+        const ctx = document.getElementById('classChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: classLabels,
+                datasets: [{
+                    label: 'Books Issued',
+                    data: classData,
+                    backgroundColor: ['#e63946', '#ff006e', '#457b9d', '#2a9d8f', '#f4a261'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+
+    <div class="popup" id="popup">
+        <h2 id="popup-text"></h2>
+        <button onclick="closePopup()">Close</button>
+    </div>
+</body>
+
+</html>

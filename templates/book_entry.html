@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📘 Book Entry – Chinmaya Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            background: #f0f8ff;
+        }
+
+        .entry-box {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn {
+            margin: 6px;
+            border-radius: 10px;
+        }
+
+        #scanner {
+            display: none;
+            width: 320px;
+            margin: auto;
+        }
+
+        #coverPreview {
+            max-width: 160px;
+            margin-top: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            max-width: 950px;
+            margin: 20px auto;
+        }
+
+        .flash-messages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .flash-messages .success {
+            color: green;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .flash-messages .error {
+            color: red;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="entry-box">
+        <h3 class="text-center mb-4">➕ Add Book to Chinmaya Library</h3>
+
+        <form method="POST" action="/add_book" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">📌 Accession Number *</label>
+                    <input type="text" name="accession" id="accession" class="form-control" placeholder="e.g. LIB001"
+                        required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">🔖 ISBN Number *</label>
+                    <input type="text" name="isbn" id="isbn" class="form-control" placeholder="Scan or type ISBN"
+                        required>
+                </div>
+            </div>
+
+            <div class="text-end mb-4">
+                <button type="button" class="btn btn-primary" onclick="fetchBookData()">🌐 Auto-Fill</button>
+                <button type="button" class="btn btn-success" onclick="startScanner()">📷 Scan</button>
+                <button type="button" class="btn btn-danger" onclick="stopScanner()" id="stopBtn"
+                    style="display:none;">❌ Stop</button>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">📖 Title *</label>
+                    <input type="text" name="title" id="title" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">👨‍💼 Author *</label>
+                    <input type="text" name="author" id="author" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">🏢 Publisher</label>
+                    <input type="text" name="publisher" id="publisher" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">📅 Publishing Year</label>
+                    <input type="text" name="year" id="year" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">📂 Category</label>
+                    <input type="text" name="category" id="category" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">📘 Status</label>
+                    <select name="status" class="form-control">
+                        <option value="Available">Available</option>
+                        <option value="Issued">Issued</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">📕 Book Cover Preview</label>
+                <br>
+                <img id="coverPreview" src="" alt="Book Cover" style="display:none;">
+                <input type="file" id="manualCover" name="cover_image" accept="image/*" class="form-control mt-2"
+                    style="max-width: 300px;" onchange="previewManualCover()">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning">💾 Save to Library</button>
+                <button type="reset" class="btn btn-secondary">🧹 Clear</button>
+            </div>
+        </form>
+
+        <hr>
+        <div class="text-center">
+            <button class="btn btn-info" onclick="saveToExcel()">📥 Export to Excel</button>
+            <button class="btn btn-dark" onclick="printBook()">🖨️ Print Entry</button>
+            <button class="btn btn-outline-primary" onclick="downloadTemplate()">⬇️ Download Excel Template</button>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-outline-success">🏠 Home</a>
+            <a href="/books_dashboard" class="btn btn-outline-dark">🔙 Back</a>
+        </div>
+
+        <div id="scanner" class="mt-4"></div>
+    </div>
+
+    <!-- JS -->
+    <script>
+        function fetchBookData() {
+            let isbn = document.getElementById('isbn').value.trim();
+            if (!isbn) return alert("Please enter ISBN number.");
+
+            fetch('https://openlibrary.org/api/books?bibkeys=ISBN:' + isbn + '&jscmd=data&format=json')
+                .then(res => res.json())
+                .then(data => {
+                    let info = data['ISBN:' + isbn];
+                    if (info) {
+                        document.getElementById("title").value = info.title || '';
+                        document.getElementById("author").value = info.authors ? info.authors[0].name : '';
+                        document.getElementById("publisher").value = info.publishers ? info.publishers[0].name : '';
+                        document.getElementById("year").value = info.publish_date || '';
+
+                        // Load cover image
+                        if (info.cover && info.cover.medium) {
+                            document.getElementById("coverPreview").src = info.cover.medium;
+                            document.getElementById("coverPreview").style.display = "block";
+                        } else {
+                            document.getElementById("coverPreview").style.display = "none";
+                        }
+                    } else {
+                        alert("No book info found. Please fill manually.");
+                        document.getElementById("coverPreview").style.display = "none";
+                    }
+                })
+                .catch(err => {
+                    alert("Fetch error. Try again.");
+                    document.getElementById("coverPreview").style.display = "none";
+                });
+        }
+
+        function previewManualCover() {
+            const file = document.getElementById("manualCover").files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("coverPreview").src = e.target.result;
+                    document.getElementById("coverPreview").style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        let html5QrCode;
+
+        function startScanner() {
+            const scanner = document.getElementById("scanner");
+            scanner.style.display = "block";
+            document.getElementById("stopBtn").style.display = "inline-block";
+            html5QrCode = new Html5Qrcode("scanner");
+
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices.length) {
+                    html5QrCode.start(devices[0].id, { fps: 10, qrbox: 250 },
+                        (decodedText) => {
+                            document.getElementById("isbn").value = decodedText;
+                            fetchBookData();
+                            stopScanner();
+                        });
+                }
+            }).catch(err => alert("Camera error: " + err));
+        }
+
+        function stopScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    document.getElementById("scanner").style.display = "none";
+                    document.getElementById("stopBtn").style.display = "none";
+                });
+            }
+        }
+
+        function saveToExcel() {
+            const book = {
+                "Accession": document.getElementById("accession").value,
+                "ISBN": document.getElementById("isbn").value,
+                "Title": document.getElementById("title").value,
+                "Author": document.getElementById("author").value,
+                "Publisher": document.getElementById("publisher").value,
+                "Year": document.getElementById("year").value,
+                "Category": document.getElementById("category").value,
+                "Status": document.querySelector("[name='status']").value
+            };
+            const ws = XLSX.utils.json_to_sheet([book]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "BookEntry");
+            XLSX.writeFile(wb, "ChinmayaBookEntry.xlsx");
+            alert("✅ Book entry saved to Excel!");
+        }
+
+        function downloadTemplate() {
+            const ws = XLSX.utils.json_to_sheet([{
+                "Accession": "", "ISBN": "", "Title": "", "Author": "", "Publisher": "", "Year": "", "Category": "", "Status": ""
+            }]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Template");
+            XLSX.writeFile(wb, "BookEntry_Template.xlsx");
+        }
+
+        function printBook() {
+            const content = `
+            <h3>📘 Chinmaya Book Entry</h3>
+            <p><strong>Accession:</strong> ${document.getElementById("accession").value}</p>
+            <p><strong>ISBN:</strong> ${document.getElementById("isbn").value}</p>
+            <p><strong>Title:</strong> ${document.getElementById("title").value}</p>
+            <p><strong>Author:</strong> ${document.getElementById("author").value}</p>
+            <p><strong>Publisher:</strong> ${document.getElementById("publisher").value}</p>
+            <p><strong>Year:</strong> ${document.getElementById("year").value}</p>
+            <p><strong>Category:</strong> ${document.getElementById("category").value}</p>
+            <p><strong>Status:</strong> ${document.querySelector("[name='status']").value}</p>
+        `;
+            const win = window.open('', '_blank');
+            win.document.write(`<html><head><title>Print</title></head><body>${content}</body></html>`);
+            win.document.close();
+            win.print();
+        }
+    </script>
+</body>
+
+</html>

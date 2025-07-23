@@ -1,0 +1,129 @@
+<!-- templates/upload_excel.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📁 Chinmaya Library Bulk Uploads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #fdfbfb, #ebedee);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .upload-section {
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background: white;
+            max-width: 900px;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon {
+            font-size: 40px;
+        }
+
+        .btn-animated {
+            transition: all 0.3s ease;
+        }
+
+        .btn-animated:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container upload-section">
+        <h2 class="text-center mb-4 text-primary fw-bold">📁 Bulk Upload & Download Panel</h2>
+
+        <div class="row g-4">
+            <!-- Book Upload -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-success">📘 Upload Books Excel</h5>
+                    <form method="POST" action="/upload_excel/books" enctype="multipart/form-data">
+                        <input type="file" name="file" accept=".xlsx" class="form-control mb-2" required>
+                        <button class="btn btn-success btn-animated" type="submit">Upload Books</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Student Upload -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-primary">👨‍🎓 Upload Students Excel</h5>
+                    <form method="POST" action="/upload_excel/students" enctype="multipart/form-data">
+                        <input type="file" name="file" accept=".xlsx" class="form-control mb-2" required>
+                        <button class="btn btn-primary btn-animated" type="submit">Upload Students</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Teacher Upload -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-warning">👩‍🏫 Upload Teachers Excel</h5>
+                    <form method="POST" action="/upload_excel/teachers" enctype="multipart/form-data">
+                        <input type="file" name="file" accept=".xlsx" class="form-control mb-2" required>
+                        <button class="btn btn-warning btn-animated" type="submit">Upload Teachers</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Categories Upload -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-danger">📚 Upload Subjects/Categories</h5>
+                    <form method="POST" action="/upload_excel/categories" enctype="multipart/form-data">
+                        <input type="file" name="file" accept=".xlsx" class="form-control mb-2" required>
+                        <button class="btn btn-danger btn-animated" type="submit">Upload Categories</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Download Templates -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-secondary">📥 Download Templates</h5>
+                    <a class="btn btn-outline-primary btn-animated mb-2" href="/download_template/books">Books
+                        Template</a>
+                    <a class="btn btn-outline-success btn-animated mb-2" href="/download_template/students">Students
+                        Template</a>
+                    <a class="btn btn-outline-warning btn-animated mb-2" href="/download_template/teachers">Teachers
+                        Template</a>
+                    <a class="btn btn-outline-danger btn-animated" href="/download_template/categories">Categories
+                        Template</a>
+                </div>
+            </div>
+
+            <!-- Export Data -->
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h5 class="text-info">📤 Export Existing Data</h5>
+                    <a class="btn btn-outline-dark btn-animated mb-2" href="/export_data/excel">Export as Excel</a>
+                    <a class="btn btn-outline-secondary btn-animated" href="/export_data/pdf">Export as PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a class="btn btn-secondary btn-animated" href="{{ url_for('view_books') }}">🔙 Back to View Books</a>
+        </div>
+    </div>
+</body>
+
+</html>

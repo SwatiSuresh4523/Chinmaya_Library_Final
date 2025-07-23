@@ -1,0 +1,19 @@
+import sqlite3
+
+DB_PATH = "library.db"
+
+def add_cover_image_column():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    # Check if column exists
+    cur.execute("PRAGMA table_info(books)")
+    columns = [col[1] for col in cur.fetchall()]
+    if "cover_image" not in columns:
+        cur.execute("ALTER TABLE books ADD COLUMN cover_image TEXT")
+        print("Added 'cover_image' column")
+    else:
+        print("'cover_image' column already exists")
+    conn.commit()
+    conn.close()
+
+add_cover_image_column()

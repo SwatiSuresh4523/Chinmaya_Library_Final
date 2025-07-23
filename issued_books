@@ -1,0 +1,22 @@
+# fix_db.py
+import sqlite3
+
+conn = sqlite3.connect("library.db")
+cur = conn.cursor()
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS issued_books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    accession_no TEXT,
+    student_name TEXT,
+    user_id TEXT,
+    issue_date TEXT,
+    due_date TEXT,
+    return_date TEXT,
+    fine INTEGER DEFAULT 0
+)
+""")
+
+conn.commit()
+conn.close()
+print("✅ 'issued_books' table created or already exists.")

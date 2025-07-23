@@ -1,0 +1,26 @@
+import sqlite3
+
+DB_PATH = "library.db"  # Adjust path if needed
+
+def add_join_date_column():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        # 🔍 Check columns in users table
+        cur.execute("PRAGMA table_info(users)")
+        columns = [col[1] for col in cur.fetchall()]
+        
+        if 'join_date' not in columns:
+            cur.execute("ALTER TABLE users ADD COLUMN join_date TEXT")
+            print("✅ 'join_date' column added to users table.")
+        else:
+            print("ℹ️ 'join_date' column already exists.")
+
+        conn.commit()
+        conn.close()
+
+    except Exception as e:
+        print("❌ Error while updating DB:", e)
+
+add_join_date_column()

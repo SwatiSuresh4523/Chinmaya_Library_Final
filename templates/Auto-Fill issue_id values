@@ -1,0 +1,17 @@
+import sqlite3
+
+conn = sqlite3.connect("library.db")
+cur = conn.cursor()
+
+# Get all row IDs
+cur.execute("SELECT rowid FROM issues")
+rows = cur.fetchall()
+
+# Update issue_id with incremental numbers
+for i, row in enumerate(rows, start=1):
+    cur.execute("UPDATE issues SET issue_id = ? WHERE rowid = ?", (i, row[0]))
+
+conn.commit()
+conn.close()
+
+print("✅ All issue_id values filled.")

@@ -1,0 +1,206 @@
+<!-- templates/help.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📚 Ask Librarian - Chinmaya Smart Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: #f9f9f9;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            margin: 40px auto;
+            width: 80%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .clear-btn {
+            background: #ffc107;
+            color: black;
+        }
+
+        .back-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #searchInput {
+            padding: 10px;
+            width: 50%;
+            margin: 10px auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .preview-img {
+            width: 60px;
+            height: auto;
+        }
+
+        .download-btn {
+            padding: 5px 10px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>📬 Ask the Librarian</h1>
+
+    <div class="form-container">
+        <form method="POST" action="/ask_librarian" enctype="multipart/form-data">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Role:</label>
+            <select name="role" required>
+                <option value="">-- Select Role --</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Parent">Parent</option>
+                <option value="Staff">Staff</option>
+            </select>
+
+            <label>Email:</label>
+            <input type="email" name="email" required>
+
+            <label>Mobile Number:</label>
+            <input type="text" name="mobile" pattern="[0-9]{10}" required>
+
+            <label>Message:</label>
+            <textarea name="message" rows="4" required></textarea>
+
+            <label>Upload Screenshot/Image:</label>
+            <input type="file" name="screenshot" accept="image/*">
+
+            <label>Attach File (PDF, DOC):</label>
+            <input type="file" name="file" accept=".pdf,.doc,.docx">
+
+            <button class="btn submit-btn" type="submit">📩 Submit</button>
+            <button class="btn clear-btn" type="reset">🧹 Clear</button>
+            <a href="/" class="btn back-btn">🏠 Back</a>
+        </form>
+    </div>
+
+    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by Name, Role or Message">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Screenshot</th>
+                <th>File</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="queryTable">
+            {% for q in queries %}
+            <tr>
+                <td>{{ q['name'] }}</td>
+                <td>{{ q['role'] }}</td>
+                <td>{{ q['email'] }}</td>
+                <td>{{ q['message'] }}</td>
+                <td>
+                    {% if q['screenshot'] %}
+                    <img src="{{ url_for('static', filename='uploads/' + q['screenshot']) }}" class="preview-img">
+                    {% else %}
+                    No Image
+                    {% endif %}
+                </td>
+                <td>
+                    {% if q['file'] %}
+                    <a class="download-btn" href="{{ url_for('static', filename='uploads/' + q['file']) }}"
+                        download>Download</a>
+                    {% else %}
+                    No File
+                    {% endif %}
+                </td>
+                <td>{{ q['date'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function filterTable() {
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let rows = document.querySelectorAll("#queryTable tr");
+
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+</body>
+
+</html>

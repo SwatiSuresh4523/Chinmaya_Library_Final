@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>📚 Chinmaya Smart Library - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+        }
+
+        .social-btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .social-btn i {
+            margin-right: 8px;
+        }
+
+        .caps-lock-alert {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <h3 class="text-center mb-4">🔐 Chinmaya Library Login</h3>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-warning">{{ msg }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST" id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">👤 Username or Email</label>
+                <input type="text" class="form-control" name="username" id="username" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">🔒 Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" name="password" id="password" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()"><i
+                            class="bi bi-eye-slash" id="eyeIcon"></i></button>
+                </div>
+                <div class="caps-lock-alert" id="capsAlert">⚠️ Caps Lock is ON!</div>
+            </div>
+
+            <!-- Google reCAPTCHA (Optional, enable with API key) -->
+            <!-- <div class="g-recaptcha mb-3" data-sitekey="your-site-key"></div> -->
+
+            <div class="d-grid">
+                <button class="btn btn-primary" type="submit">🔓 Login</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/forgot" class="text-decoration-none">🔑 Forgot Password?</a>
+        </div>
+
+        <hr>
+
+        <div class="text-center mb-2">
+            <strong>Or Login with</strong>
+        </div>
+        <button class="btn btn-danger social-btn"><i class="bi bi-google"></i> Google</button>
+        <button class="btn btn-dark social-btn"><i class="bi bi-github"></i> GitHub</button>
+        <button class="btn btn-primary social-btn"><i class="bi bi-facebook"></i> Facebook</button>
+
+        <div class="text-center mt-3">
+            <span>📌 New user? <a href="/register" class="text-decoration-none">Register Now</a></span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Optional reCAPTCHA -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+    <script>
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                pwd.type = 'password';
+                icon.classList.add('bi-eye-slash');
+                icon.classList.remove('bi-eye');
+            }
+        }
+
+        document.getElementById('password').addEventListener('keyup', function (e) {
+            const alert = document.getElementById('capsAlert');
+            alert.style.display = e.getModifierState('CapsLock') ? 'block' : 'none';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,276 @@
+<!-- 📘 Final View Books Template -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>📚 View Books – Chinmaya Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            background: linear-gradient(to right, #f3e5f5, #e1f5fe);
+        }
+
+        .container-box {
+            background: white;
+            padding: 30px;
+            margin: 30px auto;
+            border-radius: 16px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-glow {
+            border-radius: 25px;
+            font-weight: bold;
+            animation: glowPulse 2s infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .cover-thumb {
+            height: 60px;
+            border-radius: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+
+        .cover-thumb:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .badge-available {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-issued {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, #e3f2fd, #f1f8e9);
+        }
+
+        #snackbar {
+            visibility: hidden;
+            background: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 14px;
+            position: fixed;
+            z-index: 9999;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity .5s;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            opacity: 0.9;
+        }
+
+        .action-btn {
+            border-radius: 12px;
+        }
+
+        .modal-content img {
+            max-height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-box animate__animated animate__fadeIn">
+        <h3 class="text-center text-primary mb-4">📚 Chinmaya Smart Library – View Books</h3>
+
+        <!-- Top Stats + Buttons -->
+        <div class="row mb-3 text-center">
+            <div class="col-md-4">
+                <div class="btn btn-primary w-100">📚 Total Books: {{ total_books }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="btn btn-success w-100">✅ Available: {{ available_books }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="btn btn-danger w-100">📕 Issued: {{ issued_books }}</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <select class="form-select" id="filterCategory">
+                    <option value="">📂 All Categories</option>
+                    {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filterYear">
+                    <option value="">📅 All Years</option>
+                    {% for y in years %}<option>{{ y }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filterAuthor">
+                    <option value="">👤 All Authors</option>
+                    {% for a in authors %}<option>{{ a }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-outline-secondary w-50" onclick="clearFilters()">🧹 Clear</button>
+                <button class="btn btn-outline-dark w-50" onclick="location.reload()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Book Table -->
+        <div class="table-responsive">
+            <table id="bookTable" class="table table-bordered table-striped">
+                <thead class="table-info text-center">
+                    <tr>
+                        <th>📷 Cover</th>
+                        <th>📘 Title</th>
+                        <th>👨‍💼 Author</th>
+                        <th>📌 Accession</th>
+                        <th>🏢 Publisher</th>
+                        <th>📂 Category</th>
+                        <th>📅 Year</th>
+                        <th>📦 Status</th>
+                        <th>🕒 Added</th>
+                        <th>✏️</th>
+                        <th>🗑️</th>
+                        <th>📚</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for book in books %}
+                    <tr>
+                        <td class="text-center">
+                            <img src="{{ book.cover_url if book.cover_url else url_for('static', filename='img/default_cover.jpg') }}"
+                                class="cover-thumb"
+                                onclick="showCoverModal('{{ book.cover_url if book.cover_url else url_for('static', filename='img/default_cover.jpg') }}', '{{ book.title }}', '{{ book.author }}')">
+                        </td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.accession }}</td>
+                        <td>{{ book.publisher }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.year }}</td>
+                        <td>
+                            {% if book.status == 'Available' %}
+                            <span class="badge-status badge-available">✔️ Available</span>
+                            {% else %}
+                            <span class="badge-status badge-issued">❌ Issued</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ book.added_on }}</td>
+                        <td><a href="/edit_book/{{ book.id }}" class="btn btn-sm btn-warning action-btn">✏️</a></td>
+                        <td>
+                            <form action="/delete_book/{{ book.id }}" method="POST"
+                                onsubmit="return confirm('Are you sure?')" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger action-btn">🗑️</button>
+                            </form>
+                        </td>
+                        <td><a href="{{ url_for('book_history', book_id=book.id) }}"
+                                class="btn btn-sm btn-info action-btn">📚</a></td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4 d-flex flex-wrap justify-content-center gap-3">
+            <a href="/" class="btn btn-primary btn-glow">🏠 Home</a>
+            <a href="/book_entry" class="btn btn-warning btn-glow">➕ Add Book</a>
+            <a href="/upload_books_page" class="btn btn-success btn-glow">📤 Bulk Upload</a>
+            <a href="/download_books_template" class="btn btn-secondary btn-glow">⬇️ Excel Template</a>
+            <a href="/download_all_books_excel" class="btn btn-dark btn-glow">📄 Export Excel</a>
+            <a href="/download_all_books_pdf" class="btn btn-danger btn-glow">🖨️ Export PDF</a>
+        </div>
+    </div>
+
+    <!-- Snackbar -->
+    <div id="snackbar"></div>
+
+    <!-- Cover Modal -->
+    <div class="modal fade" id="bookModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-3">
+                <h5 id="modalTitle"></h5>
+                <p id="modalAuthor" class="text-muted"></p>
+                <img id="modalImage" class="img-fluid rounded" src="">
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const table = $('#bookTable').DataTable();
+
+            $('#filterCategory, #filterYear, #filterAuthor').on('change', function () {
+                table.draw();
+            });
+
+            $.fn.dataTable.ext.search.push(function (settings, data) {
+                let cat = $('#filterCategory').val();
+                let year = $('#filterYear').val();
+                let author = $('#filterAuthor').val();
+                return (!cat || data[5] === cat) &&
+                    (!year || data[6] === year) &&
+                    (!author || data[2] === author);
+            });
+        });
+
+        function clearFilters() {
+            $('#filterCategory, #filterYear, #filterAuthor').val('');
+            $('#bookTable').DataTable().draw();
+        }
+
+        function showCoverModal(url, title, author) {
+            $('#modalImage').attr('src', url);
+            $('#modalTitle').text(title);
+            $('#modalAuthor').text('by ' + author);
+            new bootstrap.Modal(document.getElementById('bookModal')).show();
+        }
+
+        function showSnackbar(msg) {
+            const sb = document.getElementById('snackbar');
+            sb.textContent = msg;
+            sb.className = 'show';
+            setTimeout(() => sb.className = sb.className.replace('show', ''), 3000);
+        }
+    </script>
+</body>
+
+</html>

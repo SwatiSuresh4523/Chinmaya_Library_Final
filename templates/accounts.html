@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>👤 Account Dashboard – Chinmaya Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom right, #f0f4c3, #b2ebf2);
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0288d1;
+            color: white;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 99;
+        }
+
+        .btn-toolbar {
+            display: flex;
+            justify-content: end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .card-stat:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons button {
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="bg-dark text-white text-center p-4">
+        <h2>📘 Chinmaya Library – Account Dashboard</h2>
+    </header>
+
+    <!-- Top-right toolbar -->
+    <div class="container mt-2">
+        <div class="btn-toolbar">
+            <a href="/" class="btn btn-dark">🏠 Home</a>
+            <a href="/issue_return" class="btn btn-primary">🔄 Issue/Return</a>
+            <a href="/view_books" class="btn btn-info">📚 View Books</a>
+        </div>
+
+        <!-- Alert -->
+        <div class="alert alert-warning">
+            <strong>🛎️ Alerts:</strong> ₹{{ fine_today }} collected today | {{ upcoming_returns }} books returning
+            soon!
+        </div>
+
+        <!-- Stats -->
+        <div class="row text-center mb-3">
+            <div class="col-md-3">
+                <div class="card card-stat bg-success text-white">
+                    <div class="card-body">
+                        <h5>Total Students</h5>
+                        <h2>{{ total_students }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-primary text-white">
+                    <div class="card-body">
+                        <h5>Total Teachers</h5>
+                        <h2>{{ total_teachers }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-warning text-dark">
+                    <div class="card-body">
+                        <h5>Recent Accounts</h5>
+                        <h2>{{ recent_accounts }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-danger text-white">
+                    <div class="card-body">
+                        <h5>Overdues Today</h5>
+                        <h2>{{ overdue_count }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Management -->
+        <h4>👨‍🎓 Student Management</h4>
+        <div class="mb-2 d-flex flex-wrap gap-2">
+            <a href="/add_student" class="btn btn-success">➕ Add</a>
+            <a href="/upload_students" class="btn btn-outline-success">⬆️ Upload</a>
+            <a href="/download_students_excel" class="btn btn-outline-dark">📄 Excel</a>
+            <a href="/download_students_pdf" class="btn btn-outline-primary">📄 PDF</a>
+            <a href="/promote_students" class="btn btn-warning">🎓 Promote</a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="🔍 Name or Class">
+            <select id="statusFilter" class="form-select">
+                <option value="">Status</option>
+                <option value="Active">✅ Active</option>
+                <option value="Inactive">❌ Inactive</option>
+            </select>
+        </div>
+
+        <table class="table table-hover table-bordered" id="studentsTable">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Account</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Books</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ s.account_no }}</td>
+                    <td><img src="{{ s.photo_url }}" width="40"></td>
+                    <td class="sname">{{ s.name }}</td>
+                    <td class="sclass">{{ s.class }}</td>
+                    <td>{{ s.books_issued }}</td>
+                    <td class="sstatus">
+                        {% if s.active %}
+                        <a href="/toggle_student_status/{{ s.account_no }}" class="btn btn-success btn-sm">✅</a>
+                        {% else %}
+                        <a href="/toggle_student_status/{{ s.account_no }}" class="btn btn-danger btn-sm">❌</a>
+                        {% endif %}
+                    </td>
+                    <td class="action-buttons">
+                        <a href="/edit_student/{{ s.account_no }}" class="btn btn-warning btn-sm">✏️</a>
+                        <a href="/delete_student/{{ s.account_no }}" class="btn btn-danger btn-sm">🗑️</a>
+                        <a href="/student_history/{{ s.account_no }}" class="btn btn-info btn-sm">📖</a>
+                        <a href="/renew_student/{{ s.account_no }}" class="btn btn-primary btn-sm">🔁</a>
+                        <a href="/exchange_book/{{ s.account_no }}" class="btn btn-outline-dark btn-sm">🔄</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Teacher Management -->
+        <h4 class="mt-5">👩‍🏫 Teacher Management</h4>
+        <div class="mb-2 d-flex flex-wrap gap-2">
+            <a href="/add_teacher" class="btn btn-success">➕ Add</a>
+            <a href="/upload_teachers" class="btn btn-outline-success">⬆️ Upload</a>
+            <a href="/download_teachers_excel" class="btn btn-outline-dark">📄 Excel</a>
+            <a href="/download_teachers_pdf" class="btn btn-outline-primary">📄 PDF</a>
+        </div>
+
+        <table class="table table-hover table-bordered">
+            <thead class="table-secondary">
+                <tr>
+                    <th>#</th>
+                    <th>Account</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Subject</th>
+                    <th>Books</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in teachers %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ t.account_no }}</td>
+                    <td><img src="{{ t.photo_url }}" width="40"></td>
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.subject }}</td>
+                    <td>{{ t.books_issued }}</td>
+                    <td>
+                        {% if t.active %}
+                        <a href="/toggle_teacher_status/{{ t.account_no }}" class="btn btn-success btn-sm">✅</a>
+                        {% else %}
+                        <a href="/toggle_teacher_status/{{ t.account_no }}" class="btn btn-danger btn-sm">❌</a>
+                        {% endif %}
+                    </td>
+                    <td class="action-buttons">
+                        <a href="/edit_teacher/{{ t.account_no }}" class="btn btn-warning btn-sm">✏️</a>
+                        <a href="/delete_teacher/{{ t.account_no }}" class="btn btn-danger btn-sm">🗑️</a>
+                        <a href="/teacher_history/{{ t.account_no }}" class="btn btn-info btn-sm">📖</a>
+                        <a href="/renew_teacher/{{ t.account_no }}" class="btn btn-primary btn-sm">🔁</a>
+                        <a href="/exchange_teacher_book/{{ t.account_no }}" class="btn btn-outline-dark btn-sm">🔄</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="text-center text-white bg-dark p-3 mt-5">
+        Chinmaya Vidyalaya Library © 2025 | 📍 Tirupati | 📞 9000738710
+    </footer>
+
+    <button class="fab" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const statusFilter = document.getElementById("statusFilter");
+        const rows = document.querySelectorAll("#studentsTable tbody tr");
+
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const statusText = statusFilter.value;
+
+            rows.forEach(row => {
+                const name = row.querySelector(".sname").innerText.toLowerCase();
+                const cls = row.querySelector(".sclass").innerText.toLowerCase();
+                const stat = row.querySelector(".sstatus").innerText.trim();
+
+                const matchesText = name.includes(searchText) || cls.includes(searchText);
+                const matchesStatus = !statusText || stat.includes(statusText);
+
+                if (matchesText && matchesStatus) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        searchInput.addEventListener("input", filterTable);
+        statusFilter.addEventListener("change", filterTable);
+    </script>
+</body>
+
+</html>

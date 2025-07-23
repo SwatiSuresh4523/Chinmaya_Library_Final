@@ -1,0 +1,11 @@
+📗 Chinmaya Smart Library – Book Return Receipt
+
+Book Title   : The Mona Mousa Code
+Book ID      : 3466
+Returned By  : Ravi Kumar
+Return Date  : 2025-07-16
+Due Date     : 2025-07-23
+Overdue Days : 0
+Fine         : ₹0
+
+Please return books on time. Thank you!

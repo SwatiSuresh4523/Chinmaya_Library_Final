@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ask Librarian - Chinmaya Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        form {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin: auto;
+            animation: slideIn 1s ease;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input[type="file"] {
+            border: none;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-submit {
+            background-color: #00b894;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #019270;
+        }
+
+        .btn-clear {
+            background-color: #d63031;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background-color: #b71c1c;
+        }
+
+        .search-bar {
+            max-width: 800px;
+            margin: 10px auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: 1px solid #999;
+        }
+
+        .btn-search {
+            background-color: #0984e3;
+            color: white;
+        }
+
+        .btn-search:hover {
+            background-color: #0652dd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #74b9ff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f1f1;
+        }
+
+        a.download-link {
+            color: #0984e3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.download-link:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📬 Ask Librarian</h1>
+
+    <form action="/ask" method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <select name="role" required>
+            <option value="">Select Role</option>
+            <option value="Student">Student</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Parent">Parent</option>
+            <option value="Staff">Staff</option>
+            <option value="Guest">Guest</option>
+        </select>
+        <input type="email" name="email" placeholder="Your Email (optional)">
+        <input type="text" name="title" placeholder="Query Title" required>
+        <textarea name="description" placeholder="Write your question or problem..." required></textarea>
+        <input type="file" name="file">
+
+        <div class="form-buttons">
+            <button type="submit" class="btn-submit">Submit Query</button>
+            <button type="reset" class="btn-clear">Clear</button>
+        </div>
+    </form>
+
+    <div class="search-bar">
+        <form method="GET" action="/ask" style="display: flex; width: 100%;">
+            <input type="text" name="search" placeholder="🔍 Search queries by name or title..."
+                value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn-search">Search</button>
+        </form>
+    </div>
+
+    {% if queries %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name & Role</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>File</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for q in queries %}
+            <tr>
+                <td>{{ q[0] }}</td>
+                <td>{{ q[1] }} ({{ q[2] }})</td>
+                <td>{{ q[4] }}</td>
+                <td>{{ q[5] }}</td>
+                <td>{{ q[7] }}</td>
+                <td>{{ q[8] }}</td>
+                <td>
+                    {% if q[6] %}
+                    <a class="download-link" href="/download/{{ q[6] }}">📎 Download</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align:center; font-size:18px; color:#555;">No queries submitted yet.</p>
+    {% endif %}
+
+</body>
+
+</html>
